@@ -18,7 +18,8 @@ public class mainAuto extends OpMode {
     private DcMotorSimple intakeMotor, transferMotor;
 
     private IMU imu;
-    private double[] speeds = {0.7, 0.75, 0.8, 0.85, 0.9};
+
+    private double speed = -0.7;
     private double targetVelocity = 0;
 
 
@@ -32,7 +33,6 @@ public class mainAuto extends OpMode {
         frontRightMotor = hardwareMap.get(DcMotor.class, "RF");
         backRightMotor = hardwareMap.get(DcMotor.class, "RR");
         shooterMotor = hardwareMap.get(DcMotor.class, "shooter");
-        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         transferMotor = hardwareMap.get(DcMotor.class, "transfer");
         intakeMotor = hardwareMap.get(DcMotor.class, "intake");
 
@@ -63,13 +63,29 @@ public class mainAuto extends OpMode {
     @Override
     public void loop()
     {
-        ;
+        if (gamepad1.x){
+            speed = -0.65;
+        }
+        if (gamepad1.a){
+            speed = -0.7;
+        }
+        if (gamepad1.b){
+            speed = -0.75;
+        }
+        if (gamepad1.y){
+            speed = -0.8;
+        }
+
+
+
+
 
         if (gamepad1.right_trigger > 0){
-            shooterMotor.setPower(-0.50);
+            shooterMotor.setPower(speed);
             targetVelocity = -0.5;
             intakeMotor.setPower(0.0);
         }
+        
         else{
             shooterMotor.setPower(0.0);
             intakeMotor.setPower(1.0);
@@ -98,7 +114,7 @@ public class mainAuto extends OpMode {
 
         // This button choice was made so that it is hard to hit on accident,
         // it can be freely changed based on preference.
-        if (gamepad1.options) {
+        if (gamepad1.back) {
             imu.resetYaw();
         }
         // The equivalent button is start on Xbox-style controllers.

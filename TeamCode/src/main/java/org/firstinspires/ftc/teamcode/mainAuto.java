@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -14,13 +18,15 @@ import java.util.List;
 
 @TeleOp()
 public class mainAuto extends OpMode {
-    private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, shooterMotor;
+    private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
+    private DcMotorEx shooterMotor;
     private DcMotorSimple intakeMotor, transferMotor;
 
     private IMU imu;
 
-    private double speed = -0.7;
-    private double targetVelocity = 0;
+    FtcDashboard dashboard;
+    public static int targetVelocity = 1700;
+
 
 
 
@@ -32,7 +38,7 @@ public class mainAuto extends OpMode {
         backLeftMotor = hardwareMap.get(DcMotor.class, "LR");
         frontRightMotor = hardwareMap.get(DcMotor.class, "RF");
         backRightMotor = hardwareMap.get(DcMotor.class, "RR");
-        shooterMotor = hardwareMap.get(DcMotor.class, "shooter");
+        shooterMotor = hardwareMap.get(DcMotorEx.class, "shooter");
         transferMotor = hardwareMap.get(DcMotor.class, "transfer");
         intakeMotor = hardwareMap.get(DcMotor.class, "intake");
 
@@ -57,43 +63,40 @@ public class mainAuto extends OpMode {
 //        // Reverse direction of left-side motors
 //        motorFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 //        motorBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //might need to change this one
+        shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(120, 0, 0, 12.5);
+        shooterMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+        dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetry.addLine("Init Complete");
 
 
     }
     @Override
     public void loop()
     {
-        if (gamepad1.x){
-            speed = -0.65;
+        if (gamepad1.yWasPressed()){
+            targetVelocity = 1700;
         }
-        if (gamepad1.a){
-            speed = -0.7;
+        if (gamepad1.aWasPressed()){
+            targetVelocity = 1300;
         }
-        if (gamepad1.b){
-            speed = -0.75;
-        }
-        if (gamepad1.y){
-            speed = -0.8;
-        }
-
-
-
-
-
+        /// /////////
         if (gamepad1.right_trigger > 0){
-            shooterMotor.setPower(speed);
-            targetVelocity = -0.5;
+            shooterMotor.setVelocity(targetVelocity);
             intakeMotor.setPower(0.0);
         }
-        
+        else if (gamepad1.left_trigger > 0){
+            shooterMotor.setVelocity(-targetVelocity);
+        }
         else{
-            shooterMotor.setPower(0.0);
+            shooterMotor.setVelocity(0.0);
             intakeMotor.setPower(1.0);
         }
-        if (gamepad1.left_trigger > 0){
-            shooterMotor.setPower(1.0);
-            targetVelocity = 1;
-        }
+
+        /// ////////////////////////////
         if (gamepad1.right_bumper){
             transferMotor.setPower(1.0);
         }
@@ -144,6 +147,7 @@ public class mainAuto extends OpMode {
 
 
         telemetry.addData("targetVelocity", targetVelocity);
-        telemetry.addData("ActualVelocity", shooterMotor.getPower());
+        telemetry.addData("ActualVelocity", shooterMotor.getVelocity());
+
     }
 }

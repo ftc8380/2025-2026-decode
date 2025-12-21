@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -10,25 +11,30 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-import java.util.Arrays;
-import java.util.List;
-
+@Config
 @TeleOp()
-public class mainAuto extends OpMode {
+public class mainTeleop extends OpMode {
     private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
     private DcMotorEx shooterMotor;
     private DcMotorSimple intakeMotor, transferMotor;
+    //private Servo servoGate;
 
     private IMU imu;
 
     FtcDashboard dashboard;
-    public static int targetVelocity = 1700;
+    public static int targetVelocity = 1450;
 
 
+/* TO DO
+    - name servo in control hub
+    -
 
+
+ */
 
 
     @Override
@@ -41,6 +47,7 @@ public class mainAuto extends OpMode {
         shooterMotor = hardwareMap.get(DcMotorEx.class, "shooter");
         transferMotor = hardwareMap.get(DcMotor.class, "transfer");
         intakeMotor = hardwareMap.get(DcMotor.class, "intake");
+        //servoGate = hardwareMap.get(Servo.class, "gate");
 
         shooterMotor.setPower(0.0);
         imu = hardwareMap.get(IMU.class, "imu");
@@ -78,46 +85,65 @@ public class mainAuto extends OpMode {
     public void loop()
     {
         if (gamepad1.yWasPressed()){
-            targetVelocity = 1700;
+            //from middle
+            targetVelocity = 1570;
+        }
+        if (gamepad1.bWasPressed()){
+            //from tip
+            targetVelocity = 1450;
         }
         if (gamepad1.aWasPressed()){
-            targetVelocity = 1300;
+            //from back
+            targetVelocity = 2100;
         }
         /// /////////
         if (gamepad1.right_trigger > 0){
             shooterMotor.setVelocity(targetVelocity);
-            intakeMotor.setPower(0.0);
+            //servoGate.setPosition(ADD VALUE HERE);
         }
         else if (gamepad1.left_trigger > 0){
             shooterMotor.setVelocity(-targetVelocity);
         }
         else{
             shooterMotor.setVelocity(0.0);
-            intakeMotor.setPower(1.0);
+            //servoGate.setPosition(ADD VALUE HERE);
+
         }
 
         /// ////////////////////////////
         if (gamepad1.right_bumper){
             transferMotor.setPower(1.0);
+            intakeMotor.setPower(0.5);
         }
         else if (gamepad1.left_bumper){
             transferMotor.setPower(-1.0);
+
         }
         else{
             transferMotor.setPower(0.0);
         }
+        /// /////////////////
+        if (gamepad2.right_trigger > 0){
+            intakeMotor.setPower(1.0);
+        }
+        else if (gamepad2.left_trigger > 0){
+            intakeMotor.setPower(-1.0);
+        }
+        else{
+            intakeMotor.setPower(0.0);
+        }
 
 
 
 
 
-        double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
-        double x = -gamepad1.left_stick_x;
-        double rx = -gamepad1.right_stick_x;
+        double y = gamepad2.left_stick_y; // Remember, Y stick value is reversed
+        double x = -gamepad2.left_stick_x;
+        double rx = -gamepad2.right_stick_x;
 
         // This button choice was made so that it is hard to hit on accident,
         // it can be freely changed based on preference.
-        if (gamepad1.back) {
+        if (gamepad2.back) {
             imu.resetYaw();
         }
         // The equivalent button is start on Xbox-style controllers.

@@ -25,7 +25,7 @@ public class PIDTester extends OpMode {
     boolean motorRunning;
     FtcDashboard dashboard;
 
-    int stepIndex = 1;
+
     @Override
     public void init() {
         shooterMotor = hardwareMap.get(DcMotorEx.class, "shooter");
@@ -46,15 +46,9 @@ public class PIDTester extends OpMode {
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, I, D, F);
         shooterMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
-        // setting velocity
-        if (gamepad1.a){
-            shooterMotor.setVelocity(targetVelocity);
-        }
-        else {
-            shooterMotor.setVelocity(0.0);
-        }
+
+        shooterMotor.setVelocity(targetVelocity);
         currentVelocity = shooterMotor.getVelocity();
-        double error = targetVelocity - currentVelocity;
 
 
 

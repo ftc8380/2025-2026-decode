@@ -14,8 +14,7 @@ import java.util.List;
 
 @TeleOp()
 public class actualAuto extends OpMode {
-    private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, shooterMotor;
-    private DcMotorSimple intakeMotor, transferMotor;
+    private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
 
     private IMU imu;
 

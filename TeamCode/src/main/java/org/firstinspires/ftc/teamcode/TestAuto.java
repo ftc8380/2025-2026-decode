@@ -47,7 +47,7 @@ public class TestAuto extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 // powers on motor
-                    shooterMotor.setVelocity(1400);
+                    shooterMotor.setVelocity(1450);
                 return false;
             }
         }
@@ -115,8 +115,21 @@ public class TestAuto extends LinearOpMode {
             }
         }
 
-        public Action transferIn() {
+        public Action transferOff() {
             return new TransferIn();
+        }
+
+        public class TransferOff implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                // turns on transfer so balls go toward shooter
+                transferMotor.setPower(1.0);
+                return false;
+            }
+        }
+
+        public Action transferIn() {
+            return new TransferOff();
         }
     }
 
@@ -150,7 +163,7 @@ public class TestAuto extends LinearOpMode {
             }
         }
 
-        public Action IntakeOff() {
+        public Action intakeOff() {
             return new IntakeOff();
         }
     }
@@ -170,19 +183,39 @@ public class TestAuto extends LinearOpMode {
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(-12, -12));
 
-        Action tab2 = tab1.endTrajectory().fresh()
+        TrajectoryActionBuilder tab2 = tab1.fresh()
                 .turnTo(Math.toRadians(270))
-                .strafeTo(new Vector2d(-12, -50))
-                .strafeToLinearHeading(new Vector2d(-12, -12), Math.toRadians(225))
-                .build();
+                .strafeTo(new Vector2d(-12, -55))
+                .stopAndAdd(shooter.shooterOn())
+                .strafeToLinearHeading(new Vector2d(-12, -12), Math.toRadians(225));
+
+        TrajectoryActionBuilder tab3 = tab2.fresh()
+//                .turnTo(Math.toRadians(270))
+                .setTangent(0)
+                .splineToLinearHeading(new Pose2d(12, -24, Math.toRadians(270)), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(12, -55), Math.toRadians(270))
+                .stopAndAdd(shooter.shooterOn())
+                .strafeToLinearHeading(new Vector2d(-12, -12), Math.toRadians(225));
+
+//        public SequentialAction shootBalls() {
+//            return new SequentialAction(
+//                    transfer.servoOpen(),
+//                    transfer.transferIn(),
+//                    intake.intakeIn(),
+//                    new SleepAction(3),
+//                    shooter.shooterOff(),
+//                    transfer.servoClose());
+//        }
 
         Action shootBalls = new SequentialAction(
                 transfer.servoOpen(),
                 transfer.transferIn(),
                 intake.intakeIn(),
                 new SleepAction(5),
-                shooter.shooterOff()
-        );
+                shooter.shooterOff(),
+                transfer.servoClose()
+            );
+
 
 
         telemetry.update();
@@ -194,11 +227,39 @@ public class TestAuto extends LinearOpMode {
                 new SequentialAction(
                         shooter.shooterOn(),
                         tab1.build(),
-                        shootBalls,
-                        transfer.servoClose(),
-                        tab2,
-                        shootBalls,
-                        transfer.servoClose()
+                        //shoots Balls
+                        new SequentialAction(
+                            transfer.servoOpen(),
+                            transfer.transferIn(),
+                            intake.intakeIn(),
+                            new SleepAction(3),
+                            shooter.shooterOff(),
+                            transfer.servoClose()
+                        ),
+                        tab2.build(),
+                        new SequentialAction(
+                            transfer.servoOpen(),
+                            transfer.transferIn(),
+                            intake.intakeIn(),
+                            new SleepAction(3),
+                            shooter.shooterOff(),
+                            transfer.servoClose()
+                        ),
+                        tab3.build(),
+                        new SequentialAction(
+                                transfer.servoOpen(),
+                                transfer.transferIn(),
+                                intake.intakeIn(),
+                                new SleepAction(3),
+                                shooter.shooterOff(),
+                                transfer.servoClose()
+                        ),
+                        new SequentialAction(
+                                transfer.servoClose(),
+                                transfer.transferOff(),
+                                intake.intakeOff(),
+                                shooter.shooterOff()
+                        )
                 )
         );
     }

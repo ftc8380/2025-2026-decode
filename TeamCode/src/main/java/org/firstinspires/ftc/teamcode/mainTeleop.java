@@ -21,12 +21,12 @@ public class mainTeleop extends OpMode {
     private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
     private DcMotorEx shooterMotor;
     private DcMotorSimple intakeMotor, transferMotor;
-    //private Servo servoGate;
+    private Servo servoGate;
 
     private IMU imu;
 
     FtcDashboard dashboard;
-    public static int targetVelocity = 1450;
+    public static int targetVelocity = 1350;
 
 
 /* TO DO
@@ -47,7 +47,7 @@ public class mainTeleop extends OpMode {
         shooterMotor = hardwareMap.get(DcMotorEx.class, "shooter");
         transferMotor = hardwareMap.get(DcMotor.class, "transfer");
         intakeMotor = hardwareMap.get(DcMotor.class, "intake");
-        //servoGate = hardwareMap.get(Servo.class, "gate");
+        servoGate = hardwareMap.get(Servo.class, "gate");
 
         shooterMotor.setPower(0.0);
         imu = hardwareMap.get(IMU.class, "imu");
@@ -84,30 +84,37 @@ public class mainTeleop extends OpMode {
     @Override
     public void loop()
     {
-        if (gamepad1.yWasPressed()){
-            //from middle
-            targetVelocity = 1570;
-        }
-        if (gamepad1.bWasPressed()){
-            //from tip
-            targetVelocity = 1450;
-        }
-        if (gamepad1.aWasPressed()){
-            //from back
-            targetVelocity = 2100;
-        }
+//        if (gamepad1.yWasPressed()){
+//            //from middle
+//            targetVelocity = 1570;
+//        }
+//        if (gamepad1.bWasPressed()){
+//            //from tip
+//            targetVelocity = 1350;
+//        }
+//        if (gamepad1.aWasPressed()){
+//            //from back
+//            targetVelocity = 2100;
+//        }
         /// /////////
         if (gamepad1.right_trigger > 0){
             shooterMotor.setVelocity(targetVelocity);
-            //servoGate.setPosition(ADD VALUE HERE);
+            servoGate.setPosition(0.6);
+
         }
         else if (gamepad1.left_trigger > 0){
             shooterMotor.setVelocity(-targetVelocity);
         }
         else{
             shooterMotor.setVelocity(0.0);
-            //servoGate.setPosition(ADD VALUE HERE);
+            servoGate.setPosition(0.25);
 
+        }
+        if (gamepad1.dpadUpWasPressed()){
+            targetVelocity += 50;
+        }
+        if (gamepad1.dpadDownWasPressed()){
+            targetVelocity -= 50;
         }
 
         /// ////////////////////////////
@@ -123,10 +130,10 @@ public class mainTeleop extends OpMode {
             transferMotor.setPower(0.0);
         }
         /// /////////////////
-        if (gamepad2.right_trigger > 0){
+        if (gamepad2.right_trigger > 0 || gamepad2.right_bumper){
             intakeMotor.setPower(1.0);
         }
-        else if (gamepad2.left_trigger > 0){
+        else if (gamepad2.left_trigger > 0 || gamepad2.left_bumper){
             intakeMotor.setPower(-1.0);
         }
         else{

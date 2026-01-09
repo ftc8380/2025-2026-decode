@@ -18,7 +18,10 @@ public class actualAuto extends OpMode {
 
     private IMU imu;
 
-    private double speed = 0.5;
+    private double speed = -0.5;
+    private double autoStartTime;
+    private boolean autoRunning;
+
 
 
 
@@ -62,7 +65,7 @@ public class actualAuto extends OpMode {
         if (autoRunning) {
             double elapsed = getRuntime() - autoStartTime;
 
-            if (elapsed >= AUTO_DURATION_SEC) {
+            if (elapsed >= 1.0) {
                 // Stop all drive motors
                 frontLeftMotor.setPower(0.0);
                 backLeftMotor.setPower(0.0);

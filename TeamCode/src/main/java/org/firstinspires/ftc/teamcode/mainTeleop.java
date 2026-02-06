@@ -71,8 +71,15 @@ public class mainTeleop extends OpMode {
 //        motorFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 //        motorBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         //might need to change this one
-        shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        //shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(120, 0, 0, 12.5);
         shooterMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
         dashboard = FtcDashboard.getInstance();
@@ -120,7 +127,8 @@ public class mainTeleop extends OpMode {
         /// ////////////////////////////
         if (gamepad1.right_bumper){
             transferMotor.setPower(1.0);
-            intakeMotor.setPower(0.5);
+            intakeMotor.setPower(1.0);
+
         }
         else if (gamepad1.left_bumper){
             transferMotor.setPower(-1.0);
@@ -132,6 +140,7 @@ public class mainTeleop extends OpMode {
         /// /////////////////
         if (gamepad2.right_trigger > 0 || gamepad2.right_bumper){
             intakeMotor.setPower(1.0);
+            transferMotor.setPower(1.0);
         }
         else if (gamepad2.left_trigger > 0 || gamepad2.left_bumper){
             intakeMotor.setPower(-1.0);

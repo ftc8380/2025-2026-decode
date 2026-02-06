@@ -1,19 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-import java.util.Arrays;
-import java.util.List;
-
-@TeleOp()
-public class actualAuto extends OpMode {
+@Config
+@Autonomous(name = "TaxiAuto", group = "Autonomous")
+public class TaxiAuto extends OpMode {
     private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor;
 
     private IMU imu;

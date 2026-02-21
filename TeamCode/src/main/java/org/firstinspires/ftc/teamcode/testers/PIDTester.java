@@ -46,9 +46,21 @@ public class PIDTester extends OpMode {
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, I, D, F);
         shooterMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
+        if (gamepad1.a){
+            shooterMotor.setVelocity(0);
 
-        shooterMotor.setVelocity(targetVelocity);
-        currentVelocity = shooterMotor.getVelocity();
+        }
+        else{
+            shooterMotor.setVelocity(targetVelocity);
+            currentVelocity = shooterMotor.getVelocity();
+        }
+        if (gamepad1.xWasPressed()){
+            shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        if (gamepad1.bWasPressed()){
+            shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+
 
 
 

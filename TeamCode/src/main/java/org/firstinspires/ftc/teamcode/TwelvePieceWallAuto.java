@@ -54,7 +54,7 @@ public class TwelvePieceWallAuto extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 // powers on motor
-                shooterMotor.setVelocity(1450);
+                shooterMotor.setVelocity(1250);
                 return false;
             }
         }
@@ -63,7 +63,7 @@ public class TwelvePieceWallAuto extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 // powers on motor
-                shooterMotor.setVelocity(1500);
+                shooterMotor.setVelocity(1280);
                 return false;
             }
         }
@@ -159,6 +159,7 @@ public class TwelvePieceWallAuto extends LinearOpMode {
 
         public Intake(HardwareMap hardwareMap) {
             intakeMotor = hardwareMap.get(DcMotor.class, "intake");
+            intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         public class IntakeIn implements Action {
@@ -215,10 +216,10 @@ public class TwelvePieceWallAuto extends LinearOpMode {
         Transfer transfer = new Transfer(hardwareMap);
         Intake intake = new Intake(hardwareMap);
 
-        double shootTime = 2.3; //seconds
+        double shootTime = 2.0; //seconds
 
         VelConstraint slowVelConstraint = new MinVelConstraint(Arrays.asList(
-                new TranslationalVelConstraint(65.0),
+                new TranslationalVelConstraint(50.0),
                 new AngularVelConstraint(Math.PI)
         ));
 
@@ -230,7 +231,7 @@ public class TwelvePieceWallAuto extends LinearOpMode {
                 .turnTo(Math.toRadians(270) * flip)
                 .strafeTo(new Vector2d(-12, -55  * flip))
                 .stopAndAdd(shooter.shooterOnFast())
-                .strafeToLinearHeading(new Vector2d(-7, -7  * flip), Math.toRadians(225)  * flip);
+                .strafeToLinearHeading(new Vector2d(-7, -5  * flip), Math.toRadians(225)  * flip);
 
         TrajectoryActionBuilder tab3 = tab2.fresh()
 //                .turnTo(Math.toRadians(270))
@@ -238,7 +239,7 @@ public class TwelvePieceWallAuto extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(12, -24 * flip, Math.toRadians(270) * flip), Math.toRadians(270)  * flip)
                 .strafeToLinearHeading(new Vector2d(12, -60 * flip), Math.toRadians(270) * flip, slowVelConstraint)
                 .stopAndAdd(shooter.shooterOnFast())
-                .strafeToLinearHeading(new Vector2d(-7, -7 * flip), Math.toRadians(225) * flip);
+                .strafeToLinearHeading(new Vector2d(-7, -5 * flip), Math.toRadians(225) * flip);
 
         TrajectoryActionBuilder tab4 = tab3.fresh()
 //                .turnTo(Math.toRadians(270))
@@ -246,7 +247,7 @@ public class TwelvePieceWallAuto extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(36, -24 * flip, Math.toRadians(270) * flip), Math.toRadians(270) * flip)
                 .strafeToLinearHeading(new Vector2d(36, -60 * flip), Math.toRadians(270) * flip, slowVelConstraint)
                 .stopAndAdd(shooter.shooterOnFast())
-                .strafeToLinearHeading(new Vector2d(-7, -7 * flip), Math.toRadians(225) * flip);
+                .strafeToLinearHeading(new Vector2d(-7, -5 * flip), Math.toRadians(225) * flip);
 
 //        public SequentialAction shootBalls() {
 //            return new SequentialAction(

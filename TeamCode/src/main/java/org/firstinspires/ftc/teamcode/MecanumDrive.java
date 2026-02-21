@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+ package org.firstinspires.ftc.teamcode;
 
 import androidx.annotation.NonNull;
 
@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.*;
-import com.acmerobotics.roadrunner.AngularVelConstraint;
+        import com.acmerobotics.roadrunner.AngularVelConstraint;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.HolonomicController;
 import com.acmerobotics.roadrunner.MecanumKinematics;
@@ -64,17 +64,17 @@ public final class MecanumDrive {
 
         // drive model parameters
         public double inPerTick = 123.5 / 62954;
-        public double lateralInPerTick = 0.0014823151832644359;
-        public double trackWidthTicks = 7779.308029662091;
+        public double lateralInPerTick = inPerTick;
+        public double trackWidthTicks = 8131.234318300947;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.8975223733948736;
-        public double kV = 0.00038527766102146196;
+        public double kS = 0.8228718228346734;
+        public double kV = 0.0003941358035439081;;
         public double kA = 0.00008;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 75;
-        public double minProfileAccel = -50;
+        public double maxWheelVel = 60;
+        public double minProfileAccel = -40;
         public double maxProfileAccel = 50;
 
         // turn profile parameters (in radians)
@@ -82,13 +82,13 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 10.0;
-        public double lateralGain = 5.0;
-        public double headingGain = 7.0; // shared with turn
+        public double axialGain = 12.0;
+        public double lateralGain = 6.0;
+        public double headingGain = 4.0; // shared with turn
 
-        public double axialVelGain = 1.0;
+        public double axialVelGain = 0.8;
         public double lateralVelGain = 0.5;
-        public double headingVelGain = 1.0; // shared with turn
+        public double headingVelGain = 0.5; // shared with turn
     }
 
     public static Params PARAMS = new Params();
@@ -238,8 +238,8 @@ public final class MecanumDrive {
 
         // TODO: reverse motor directions if needed
         //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-            leftFront.setDirection(DcMotor.Direction.REVERSE);
-            leftBack.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         lazyImu = new LazyHardwareMapImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
@@ -453,14 +453,14 @@ public final class MecanumDrive {
     public PoseVelocity2d updatePoseEstimate() {
         PoseVelocity2d vel = localizer.update();
         poseHistory.add(localizer.getPose());
-        
+
         while (poseHistory.size() > 100) {
             poseHistory.removeFirst();
         }
 
         estimatedPoseWriter.write(new PoseMessage(localizer.getPose()));
-        
-        
+
+
         return vel;
     }
 

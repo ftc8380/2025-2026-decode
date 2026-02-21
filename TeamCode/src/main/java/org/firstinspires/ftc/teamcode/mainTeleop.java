@@ -26,7 +26,7 @@ public class mainTeleop extends OpMode {
     private IMU imu;
 
     FtcDashboard dashboard;
-    public static int targetVelocity = 1350;
+    public static int targetVelocity = 1200;
 
 
 /* TO DO
@@ -77,8 +77,11 @@ public class mainTeleop extends OpMode {
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+
         //might need to change this one
-        //shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(120, 0, 0, 12.5);
         shooterMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
@@ -139,33 +142,30 @@ public class mainTeleop extends OpMode {
         }
         /// /////////////////
         if (gamepad2.right_trigger > 0 || gamepad2.right_bumper){
+            //right trigger + bumper intakes + transfers balls
             intakeMotor.setPower(1.0);
             transferMotor.setPower(1.0);
         }
         else if (gamepad2.left_trigger > 0 || gamepad2.left_bumper){
+            //right trigger + bumper outtakes balls
             intakeMotor.setPower(-1.0);
         }
         else{
             intakeMotor.setPower(0.0);
         }
 
-
-
-
-
-        double y = gamepad2.left_stick_y; // Remember, Y stick value is reversed
-        double x = -gamepad2.left_stick_x;
-        double rx = -gamepad2.right_stick_x;
+        double y = -gamepad2.left_stick_y; // Remember, Y stick value is reversed
+        double x = gamepad2.left_stick_x;
+        double rx = gamepad2.right_stick_x;
 
         // This button choice was made so that it is hard to hit on accident,
         // it can be freely changed based on preference.
+        // The equivalent button is start on Xbox-style controllers.
         if (gamepad2.back) {
             imu.resetYaw();
         }
-        // The equivalent button is start on Xbox-style controllers.
 
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-
 
         // Rotate the movement direction counter to the bot's rotation
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -184,9 +184,13 @@ public class mainTeleop extends OpMode {
 
         frontLeftMotor.setPower(frontLeftPower);
         backLeftMotor.setPower(backLeftPower);
-        frontRightMotor.setPower(-frontRightPower);
-        backRightMotor.setPower(-backRightPower);
+        frontRightMotor.setPower(frontRightPower);
+        backRightMotor.setPower(backRightPower);
 
+        telemetry.addData("FL power", frontLeftPower);
+        telemetry.addData("FR power", frontRightPower);
+        telemetry.addData("RL power", backLeftPower);
+        telemetry.addData("RR power", backRightPower);
 
         telemetry.addData("targetVelocity", targetVelocity);
         telemetry.addData("ActualVelocity", shooterMotor.getVelocity());
